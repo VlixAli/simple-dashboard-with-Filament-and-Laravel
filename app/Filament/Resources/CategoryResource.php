@@ -7,11 +7,13 @@ use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
@@ -26,11 +28,13 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->reactive()
-                    ->afterStateUpdated(function (Closure $set,$state){
-                        $set('slug', Str::slug($state));
-                    })->required(),
-                TextInput::make('slug')->required()
+               Card::make()->schema([
+                   TextInput::make('name')->reactive()
+                       ->afterStateUpdated(function (Closure $set,$state){
+                           $set('slug', Str::slug($state));
+                       })->required(),
+                   TextInput::make('slug')->required()
+               ])
             ]);
     }
 
@@ -38,7 +42,9 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('name')->limit(50)->sortable(),
+                TextColumn::make('slug')->limit(50)
             ])
             ->filters([
                 //
